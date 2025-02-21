@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axiosClient from "../axios-client";
 import { useStateContext } from "../contexts/ContextProvider";
+import { toast } from "react-toastify";
 
 export default function Signup() {
     const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ export default function Signup() {
     });
     const [errors, setErrors] = useState(null);
     const { setUser, setToken } = useStateContext();
+    const navigate = useNavigate();
 
     const handleChange = (ev) => {
         setFormData({
@@ -25,17 +27,26 @@ export default function Signup() {
         axiosClient
             .post("/signup", formData)
             .then(({ data }) => {
-                console.log("Resposta do servidor:", data);
                 setUser(data.user);
                 setToken(data.token);
+                toast.success("Conta criada com sucesso!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+                setTimeout(() => {
+                    navigate("/");
+                }, 1000);
             })
-            // .catch((err) => {
-            //     const response = err.response;
-            //     console.error("Erro na requisição:", err);
-            //     if (response && response.status === 422) {
-            //         setErrors(response.data.errors);
-            //     }
-            // });
+            .catch((err) => {
+                const response = err.response;
+                if (response && response.status === 422) {
+                    setErrors(response.data.errors);
+                }
+            });
     };
 
     return (

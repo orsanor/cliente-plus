@@ -12,15 +12,15 @@ export const ContextProvider = ({ children }) => {
     const [user, setUser] = useState({
         name: "Orsano",
     });
-    const [token, _setToken] = useState(localStorage.getItem("ACESS_TOKEN"));
+    const [token, _setToken] = useState(localStorage.getItem("ACCESS_TOKEN"));
 
     // localStorage.getItem("ACESS_TOKEN")
     const setToken = (token) => {
         _setToken(token);
         if (token) {
-            localStorage.setItem("ACCES_TOKEN", token);
+            localStorage.setItem("ACCESS_TOKEN", token);
         } else {
-            localStorage.removeItem("ACCES_TOKEN");
+            localStorage.removeItem("ACCESS_TOKEN");
         }
     };
     return (
