@@ -12,7 +12,7 @@ export default function Signup() {
         password_confirmation: "",
     });
     const [errors, setErrors] = useState(null);
-    const { setUser, setToken } = useStateContext();
+    const { setUser } = useStateContext();
     const navigate = useNavigate();
 
     const handleChange = (ev) => {
@@ -28,7 +28,6 @@ export default function Signup() {
             .post("/signup", formData)
             .then(({ data }) => {
                 setUser(data.user);
-                setToken(data.token);
                 toast.success("Conta criada com sucesso!", {
                     position: "top-right",
                     autoClose: 3000,

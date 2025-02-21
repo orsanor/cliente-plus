@@ -19,7 +19,7 @@ export default function DefaultLayout() {
                 setUser(null);
                 setToken(null);
             });
-    }, [setUser, setToken]);
+    }, []);
 
     if (!token) {
         return <Navigate to="/login" />;
