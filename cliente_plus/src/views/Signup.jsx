@@ -29,13 +29,13 @@ export default function Signup() {
                 setUser(data.user);
                 setToken(data.token);
             })
-            .catch((err) => {
-                const response = err.response;
-                console.error("Erro na requisição:", err);
-                if (response && response.status === 422) {
-                    setErrors(response.data.errors);
-                }
-            });
+            // .catch((err) => {
+            //     const response = err.response;
+            //     console.error("Erro na requisição:", err);
+            //     if (response && response.status === 422) {
+            //         setErrors(response.data.errors);
+            //     }
+            // });
     };
 
     return (
