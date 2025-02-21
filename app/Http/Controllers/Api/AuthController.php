@@ -43,10 +43,14 @@ class AuthController extends Controller
         return response()->json(compact('user', 'token'));
     }
 
-    public function logout(Request $request) {
-        $user = $request->user();
-        $user->currentAccessToken()->delete();
+    public function logout(Request $request) 
+    {
+    $request->user()->tokens()->delete();
+    return response()->json('', 204);
+    }
 
-        return response()->json('', 204);
+    public function user(Request $request) 
+    {
+        return response()->json($request->user());
     }
 }

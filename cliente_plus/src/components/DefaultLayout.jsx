@@ -1,8 +1,25 @@
 import { Navigate, Outlet, Link } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
+import { useEffect } from "react";
+import axiosClient from "../axios-client";
+import { toast } from "react-toastify";
 
 export default function DefaultLayout() {
-    const { user, token } = useStateContext();
+    const { user, token, setUser, setToken } = useStateContext();
+
+    useEffect(() => {
+        axiosClient
+            .get("/user")
+            .then(({ data }) => {
+                console.log(data);
+                setUser(data);
+            })
+            .catch((err) => {
+                console.error("Erro ao carregar dados do usuário:", err);
+                setUser(null);
+                setToken(null);
+            });
+    }, [setUser, setToken]);
 
     if (!token) {
         return <Navigate to="/login" />;
@@ -10,6 +27,18 @@ export default function DefaultLayout() {
 
     const logout = (ev) => {
         ev.preventDefault();
+        axiosClient.post("/logout").then(() => {
+            toast.warning("Usuário deslogado", {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+            setUser({});
+            setToken(null);
+        });
     };
 
     return (
@@ -23,9 +52,13 @@ export default function DefaultLayout() {
                     <div>Header</div>
                     <div>
                         {user.name}
-                        <a href="#" onClick={logout} className="btn-logout">
+                        <button
+                            href="#"
+                            onClick={logout}
+                            className="btn btn-logout"
+                        >
                             Sair
-                        </a>
+                        </button>
                     </div>
                 </header>
                 <main>

@@ -8,15 +8,12 @@ const axiosClient = axios.create({
 // Função para obter o CSRF token
 const getCsrfToken = async () => {
     try {
-        // Fazendo a requisição para a rota completa
         const response = await axios.get(
             `${import.meta.env.VITE_APP_BASE_URL}/csrf-token`,
             {
                 withCredentials: true,
             }
         );
-
-        console.log("Resposta CSRF:", response.data); // Debug
 
         if (!response.data.csrf_token) {
             console.error("CSRF Token não encontrado na resposta");
@@ -37,9 +34,6 @@ axiosClient.interceptors.request.use(async (config) => {
         if (csrfToken) {
             config.headers["X-CSRF-TOKEN"] = csrfToken;
             config.headers["X-XSRF-TOKEN"] = csrfToken;
-            console.log("CSRF Token adicionado:", csrfToken); // Debug
-        } else {
-            console.warn("CSRF Token não disponível");
         }
 
         const token = localStorage.getItem("ACCESS_TOKEN");
