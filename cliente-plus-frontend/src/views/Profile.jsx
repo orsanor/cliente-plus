@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axiosClient from "../axios-client";
 import { TextField } from "@mui/material";
 import { toast } from "react-toastify";
+import Button from "@mui/material/Button";
 
 const textFieldStyle = {
     "& .MuiInputLabel-outlined": {
@@ -149,17 +150,18 @@ export default function Profile() {
                     </div>
 
                     <div className="btn-group">
-                        <button type="submit" className="btn btn-sm">
+                        <Button type="submit" variant="contained">
                             Atualizar Informações
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                             type="button"
                             onClick={handleDelete}
-                            className="btn btn-delete"
+                            variant="contained"
+                            color="error"
                         >
                             Deletar Conta
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>
