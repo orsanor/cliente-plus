@@ -1,26 +1,36 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axiosClient from "../axios-client";
+import { TextField } from "@mui/material";
+import { toast } from "react-toastify";
+
+const textFieldStyle = {
+    "& .MuiInputLabel-outlined": {
+        backgroundColor: "white",
+        paddingX: "4px",
+    },
+};
 
 export default function Profile() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
-        senha: "",
-        confirmarSenha: "",
+        password: "",
+        password_confirmation: "",
     });
-    const [mensagem, setMensagem] = useState("");
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        if (user) {
-            setFormData((prevState) => ({
-                ...prevState,
-                name: user.name || "",
-                email: user.email || "",
-                senha: "",
-                confirmarSenha: "",
-            }));
-        }
+        axiosClient
+            .get("/user")
+            .then(({ data }) => {
+                setFormData((prevState) => ({
+                    ...prevState,
+                    name: data.name || "",
+                    email: data.email || "",
+                }));
+            })
+            .catch((error) => {
+                console.error("Erro ao carregar dados do usuário:", error);
+            });
     }, []);
 
     const handleChange = (e) => {
@@ -33,10 +43,31 @@ export default function Profile() {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            await axios.put("users", formData);
-            setMensagem("Perfil atualizado com sucesso!");
+            if (formData.password || formData.password_confirmation) {
+                if (formData.password !== formData.password_confirmation) {
+                    toast.error("As senhas não correspondem!");
+                    return;
+                }
+            }
+
+            const dataForm = Object.fromEntries(
+                Object.entries(formData).filter(([_, value]) => value !== "")
+            );
+
+            delete dataForm.confirmarSenha;
+
+            const response = await axiosClient.put("/user/profile", dataForm);
+
+            if (response.data) {
+                toast.success("Perfil atualizado com sucesso!");
+            }
         } catch (error) {
-            setMensagem("Erro ao atualizar perfil: " + error.message);
+            toast.error(
+                "Erro ao atualizar perfil: " +
+                    (error.response?.data?.message ||
+                        error.message ||
+                        "Erro desconhecido")
+            );
         }
     };
 
@@ -47,10 +78,11 @@ export default function Profile() {
             )
         ) {
             try {
-                await axios.delete("/api/usuarios");
-                setMensagem("Conta deletada com sucesso!");
+                await axiosClient.delete("/user/profile");
+                toast.success("Conta deletada com sucesso!");
+                window.location.href = "/logout";
             } catch (error) {
-                setMensagem("Erro ao deletar conta: " + error.message);
+                toast.error("Erro ao deletar conta: " + error.message);
             }
         }
     };
@@ -59,46 +91,60 @@ export default function Profile() {
         <div className="profile-form">
             <div className="form">
                 <h2 className="title">Editar Perfil</h2>
-                {mensagem && <div className="alert">{mensagem}</div>}
 
                 <form onSubmit={handleUpdate}>
                     <div className="input-group">
-                        <input
-                            type="text"
+                        <TextField
+                            fullWidth
+                            label="Nome"
                             name="name"
-                            placeholder="Nome"
                             value={formData.name}
                             onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            sx={textFieldStyle}
                         />
                     </div>
 
                     <div className="input-group">
-                        <input
-                            type="email"
+                        <TextField
+                            fullWidth
+                            label="Email"
                             name="email"
-                            placeholder="Email"
+                            type="email"
                             value={formData.email}
                             onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            sx={textFieldStyle}
                         />
                     </div>
 
                     <div className="input-group">
-                        <input
+                        <TextField
+                            fullWidth
+                            label="Nova Senha"
+                            name="password"
                             type="password"
-                            name="senha"
-                            placeholder="Nova Senha"
-                            value={formData.senha}
+                            value={formData.password}
                             onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            sx={textFieldStyle}
                         />
                     </div>
 
                     <div className="input-group">
-                        <input
+                        <TextField
+                            fullWidth
+                            label="Confirmar Nova Senha"
+                            name="password_confirmation"
                             type="password"
-                            name="confirmarSenha"
-                            placeholder="Confirmar Nova Senha"
-                            value={formData.confirmarSenha}
+                            value={formData.password_confirmation}
                             onChange={handleChange}
+                            variant="outlined"
+                            margin="normal"
+                            sx={textFieldStyle}
                         />
                     </div>
 
@@ -110,7 +156,7 @@ export default function Profile() {
                         <button
                             type="button"
                             onClick={handleDelete}
-                            className="btn btn-sm btn-delete"
+                            className="btn btn-delete"
                         >
                             Deletar Conta
                         </button>

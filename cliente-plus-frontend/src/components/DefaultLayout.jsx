@@ -11,7 +11,6 @@ export default function DefaultLayout() {
         axiosClient
             .get("/user")
             .then(({ data }) => {
-                console.log(data);
                 setUser(data);
             })
             .catch((err) => {
