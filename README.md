@@ -40,10 +40,6 @@ Sistema de gerenciamento de clientes e usuários desenvolvido com Laravel no bac
     DB_PASSWORD=
     ```
 
-    ```
-
-    ```
-
 5. Gere a chave da aplicação:
     ```bash
     php artisan key:generate
