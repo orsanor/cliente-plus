@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import axiosClient from "../axios-client";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TextField, Select, MenuItem, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import EditUserModal from "../components/EditUserModal";
+import EditClientModal from "../components/EditClientModal";
 import Button from "@mui/material/Button";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function List() {
     const navigate = useNavigate();
@@ -14,6 +17,7 @@ export default function List() {
     const [viewType, setViewType] = useState("users");
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedClient, setSelectedClient] = useState(null);
 
     useEffect(() => {
         getData();
@@ -34,6 +38,7 @@ export default function List() {
             })
             .catch((err) => {
                 console.error("Erro ao carregar dados:", err);
+                toast.error("Erro ao carregar dados");
                 setData([]);
                 setLoading(false);
             });
@@ -55,10 +60,12 @@ export default function List() {
             axiosClient
                 .delete(endpoint)
                 .then(() => {
+                    toast.success("Item excluído com sucesso!");
                     getData();
                 })
                 .catch((error) => {
                     console.error("Erro ao excluir:", error);
+                    toast.error("Erro ao excluir item");
                 })
                 .finally(() => {
                     setLoading(false);
@@ -67,6 +74,7 @@ export default function List() {
     };
 
     const handleEdit = (item) => {
+        setSelectedClient(item);
         setSelectedUser(item);
         setModalOpen(true);
     };
@@ -80,11 +88,13 @@ export default function List() {
         axiosClient
             .put(endpoint, formData)
             .then(() => {
+                toast.success("Dados atualizados com sucesso!");
                 getData();
                 setModalOpen(false);
             })
             .catch((error) => {
                 console.error("Erro ao atualizar:", error);
+                toast.error("Erro ao atualizar dados");
             })
             .finally(() => {
                 setLoading(false);
@@ -101,6 +111,7 @@ export default function List() {
                                 <th>Nome</th>
                                 <th>Email</th>
                                 <th>Data de Criação</th>
+                                <th>Data de Atualização</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -114,6 +125,17 @@ export default function List() {
                                         <td>
                                             {new Date(
                                                 user.created_at
+                                            ).toLocaleDateString("pt-BR", {
+                                                day: "2-digit",
+                                                month: "2-digit",
+                                                year: "numeric",
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                        </td>
+                                        <td>
+                                            {new Date(
+                                                user.updated_at
                                             ).toLocaleDateString("pt-BR", {
                                                 day: "2-digit",
                                                 month: "2-digit",
@@ -157,50 +179,87 @@ export default function List() {
         }
 
         return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>CEP</th>
-                        <th>Endereço</th>
-                        <th>Cidade</th>
-                        <th>Estado</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {loading}
-                    {!loading &&
-                        filteredData.map((client) => (
-                            <tr key={client.id}>
-                                <td>{client.name}</td>
-                                <td>{client.email}</td>
-                                <td>{client.cep}</td>
-                                <td>{client.address}</td>
-                                <td>{client.city}</td>
-                                <td>{client.state}</td>
-                                <td>
-                                    <Link
-                                        to={`/clients/${client.id}`}
-                                        className="btn-edit btn-sm"
-                                    >
-                                        Editar
-                                    </Link>
-                                    &nbsp;
-                                    <button className="btn btn-delete btn-sm">
-                                        Excluir
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                </tbody>
-            </table>
+            <>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>CEP</th>
+                            <th>Endereço</th>
+                            <th>Telefone</th>
+                            <th>Data de Criação</th>
+                            <th>Data de Atualização</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading}
+                        {!loading &&
+                            filteredData.map((client) => (
+                                <tr key={client.id}>
+                                    <td>{client.name}</td>
+                                    <td>{client.email}</td>
+                                    <td>{client.cep}</td>
+                                    <td>{client.address}</td>
+                                    <td>{client.phone_number}</td>
+                                    <td>
+                                        {new Date(
+                                            client.created_at
+                                        ).toLocaleDateString("pt-BR", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        })}
+                                    </td>
+                                    <td>
+                                        {new Date(
+                                            client.updated_at
+                                        ).toLocaleDateString("pt-BR", {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        })}
+                                    </td>
+                                    <td>
+                                        <Button
+                                            onClick={() => handleEdit(client)}
+                                            variant="contained"
+                                            size="small"
+                                        >
+                                            Editar
+                                        </Button>
+                                        &nbsp;
+                                        <Button
+                                            onClick={() => handleDelete(client)}
+                                            variant="contained"
+                                            color="error"
+                                            size="small"
+                                        >
+                                            Excluir
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
+                <EditClientModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    client={selectedClient}
+                    onSave={handleSave}
+                />
+            </>
         );
     };
 
     return (
         <div>
+            <ToastContainer />
             <div>
                 <div
                     style={{
@@ -221,6 +280,7 @@ export default function List() {
                             value={viewType}
                             onChange={(e) => setViewType(e.target.value)}
                             style={{ minWidth: "110px" }}
+                            size="small"
                         >
                             <MenuItem value="users">Usuários</MenuItem>
                             <MenuItem value="clients">Clientes</MenuItem>
@@ -229,6 +289,7 @@ export default function List() {
                             placeholder="Pesquisar por nome..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                            size="small"
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -238,18 +299,23 @@ export default function List() {
                             }}
                         />
                     </div>
-                    {viewType === "clients" && (
-                        <div>
-                            <Button
-                                variant="contained"
-                                color="success"
-                                size="small"
-                                onClick={() => navigate(`/users/new`)}
-                            >
-                                Novo Cliente +
-                            </Button>
-                        </div>
-                    )}
+                    <div>
+                        <Button
+                            variant="contained"
+                            color="success"
+                            size="small"
+                            onClick={() =>
+                                navigate(
+                                    `/Forms?type=${
+                                        viewType === "users" ? "user" : "client"
+                                    }`
+                                )
+                            }
+                        >
+                            Novo {viewType === "users" ? "Usuário" : "Cliente"}{" "}
+                            +
+                        </Button>
+                    </div>
                 </div>
                 <div className="card animated fadeIndown">{renderTable()}</div>
             </div>

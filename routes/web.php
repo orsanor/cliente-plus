@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ClientController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -17,6 +18,7 @@ Route::prefix('api')->group(function () {
         
         // Rotas para gerenciamento geral de usuários
         Route::apiResource('/users', UserController::class);
+        Route::apiResource('/clients', ClientController::class);
     });
 
     Route::post('/signup', [AuthController::class, 'signup']);

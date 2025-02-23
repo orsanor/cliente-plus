@@ -51,7 +51,7 @@ export default function DefaultLayout() {
                         </Link>
                         <nav>
                             <Link to="/list">Listagem</Link>
-                            <Link to="/users/new">Cadastro</Link>
+                            <Link to="/Forms">Cadastro</Link>
                         </nav>
                     </div>
                     <div className="user-menu">

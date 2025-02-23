@@ -3,6 +3,7 @@ import { useState } from "react";
 import axiosClient from "../axios-client";
 import { useStateContext } from "../contexts/ContextProvider";
 import { toast } from "react-toastify";
+import Button from "@mui/material/Button";
 
 export default function Login() {
     const [userData, setUserData] = useState({
@@ -74,7 +75,9 @@ export default function Login() {
                             ))}
                         </div>
                     )}
-                    <button className="btn">Logar</button>
+                    <Button variant="contained" color="primary" type="submit">
+                        Logar
+                    </Button>
                     <p className="message">
                         Não tem uma conta?{" "}
                         <Link to="/signup">Crie uma conta</Link>
