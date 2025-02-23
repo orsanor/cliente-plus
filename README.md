@@ -1,8 +1,8 @@
-# Cliente Plus - Sistema de Gerenciamento de Clientes
+# Cliente Plus - Sistema de Gerenciamento de Clientes e Usuários
 
 ## 📋 Descrição
 
-Sistema de gerenciamento de clientes desenvolvido com Laravel no backend e React no frontend, permitindo cadastro de usuários e gerenciamento de clientes.
+Sistema de gerenciamento de clientes e usuários desenvolvido com Laravel no backend e React no frontend, permitindo cadastro de usuários e gerenciamento de clientes.
 
 ## 🚀 Pré-requisitos
 
@@ -30,14 +30,20 @@ Sistema de gerenciamento de clientes desenvolvido com Laravel no backend e React
     cp .env.example .env
     ```
 4. Configure o banco de dados no arquivo `.env`:
+
     ```env
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=seu_banco
-    DB_USERNAME=seu_usuario
-    DB_PASSWORD=sua_senha
+    DB_DATABASE=clientes_plus
+    DB_USERNAME=root
+    DB_PASSWORD=
     ```
+
+    ```
+
+    ```
+
 5. Gere a chave da aplicação:
     ```bash
     php artisan key:generate
@@ -95,6 +101,9 @@ Sistema de gerenciamento de clientes desenvolvido com Laravel no backend e React
 -   TailwindCSS
 -   React Router DOM
 -   Axios
+-   Mui
+-   Toast
+-   ViaCep
 
 ## 🔐 Funcionalidades
 
@@ -103,7 +112,3 @@ Sistema de gerenciamento de clientes desenvolvido com Laravel no backend e React
 -   Gerenciamento de clientes (CRUD)
 -   Interface responsiva
 -   Proteção de rotas
-
-## 👥 Autor
-
--   **Jonathan Orsano** - [Seu GitHub](https://github.com/orsanor)
