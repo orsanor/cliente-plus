@@ -1,11 +1,13 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Login from "./views/Login";
 import Signup from "./views/Signup";
-import Users from "./views/Users";
+import Clients from "./views/Clients";
 import List from "./views/List";
 import NotFound from "./views/NotFound";
 import GuestLayout from "./components/GuestLayout";
 import DefaultLayout from "./components/DefaultLayout";
+import Profile from "./views/Profile";
+import UserForm from "./views/UserForm";
 
 const router = createBrowserRouter([
     {
@@ -14,15 +16,27 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "/",
-                element: <Navigate to="/users/" />,
+                element: <Navigate to="/list/" />,
             },
             {
                 path: "/list",
                 element: <List />,
             },
             {
-                path: "/users",
-                element: <Users />,
+                path: "/clients",
+                element: <Clients />,
+            },
+            {
+                path: "/profile",
+                element: <Profile />,
+            },
+            {
+                path: "/users/new",
+                element: <UserForm key={"userCreate"} />,
+            },
+            {
+                path: "/users/:id",
+                element: <UserForm key={"userEdit"} />,
             },
         ],
     },

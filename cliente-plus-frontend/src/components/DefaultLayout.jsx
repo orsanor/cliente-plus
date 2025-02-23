@@ -19,6 +19,7 @@ export default function DefaultLayout() {
                 setUser(null);
                 setToken(null);
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!token) {
@@ -43,22 +44,28 @@ export default function DefaultLayout() {
 
     return (
         <div id="defaultLayout">
-            <aside>
-                <Link to="/list">List</Link>
-                <Link to="/users">Users</Link>
-            </aside>
             <div className="content">
                 <header>
-                    <div>Header</div>
-                    <div>
-                        {user.name}
-                        <button
-                            href="#"
-                            onClick={logout}
-                            className="btn btn-logout"
-                        >
-                            Sair
-                        </button>
+                    <div className="header-left">
+                        <Link to="/list" className="logo-link">
+                            <h2>Cliente + </h2>
+                        </Link>
+                        <nav>
+                            <Link to="/list">Listagem</Link>
+                            <Link to="/users/new">Cadastro</Link>
+                        </nav>
+                    </div>
+                    <div className="user-menu">
+                        <span className="user-name">
+                            {user.name}
+                            <span className="material-icons">expand_more</span>
+                        </span>
+                        <div className="dropdown-menu">
+                            <Link to="/profile">Meu Perfil</Link>
+                            <button onClick={logout} className="btn-logout">
+                                Sair
+                            </button>
+                        </div>
                     </div>
                 </header>
                 <main>
